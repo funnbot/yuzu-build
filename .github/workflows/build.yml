@@ -73,7 +73,6 @@ jobs:
         -DENABLE_OPENGL=ON
         -DYUZU_ROOM=ON
         -DENABLE_QT6=ON
-        -DCMAKE_UNITY_BUILD=ON
     - name: build
       shell: cmd
       run: >
