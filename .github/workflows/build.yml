@@ -49,8 +49,8 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
     - name: configure
       shell: cmd
-      env:
-        # broken... CXXFLAGS: "/Gw /GA /Gr /Ob2 /arch:AVX2 /favor:AMD64"
+      # env:
+      # broken... CXXFLAGS: "/Gw /GA /Gr /Ob2 /arch:AVX2 /favor:AMD64"
       run: >
         cd %GITHUB_WORKSPACE%/yuzu && cmake -B build -G Ninja 
         -DCMAKE_BUILD_TYPE=Release
