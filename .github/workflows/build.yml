@@ -50,7 +50,7 @@ jobs:
     - name: configure
       shell: cmd
       env:
-        CXXFLAGS: "/Gw /GA /Gr /Ob2 /arch:AVX2 /favor:AMD64"
+        # broken... CXXFLAGS: "/Gw /GA /Gr /Ob2 /arch:AVX2 /favor:AMD64"
       run: >
         cd %GITHUB_WORKSPACE%/yuzu && cmake -B build -G "Visual Studio 17 2022" -A x64 
         -DCMAKE_BUILD_TYPE=Release
