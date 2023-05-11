@@ -38,7 +38,6 @@ jobs:
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%/yuzu/externals/vcpkg
-        git fetch --unshallow --filter=blob:none
         ./bootstrap-vcpkg.bat
     - name: Setup Vulkan
       run: |
@@ -56,7 +55,7 @@ jobs:
         CXXFLAGS: "/Gw /GA /Gr /GL /arch:AVX2"
         LDFLAGS: "/LTCG"
       run: >
-        cd %GITHUB_WORKSPACE%/yuzu && cmake -B build -G Ninja 
+        cd %GITHUB_WORKSPACE%/yuzu && cmake -B build -G Ninja
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_TOOLCHAIN_FILE=./externals/vcpkg/scripts/buildsystems/vcpkg.cmake
         -DYUZU_ENABLE_LTO=ON
@@ -73,10 +72,12 @@ jobs:
         -DYUZU_CRASH_DUMPS=ON
         -DENABLE_OPENGL=ON
         -DYUZU_ROOM=ON
+        -DENABLE_QT6=ON
+        -DCMAKE_UNITY_BUILD=ON
     - name: build
       shell: cmd
       run: >
-        cd %GITHUB_WORKSPACE%/yuzu && cmake --build build
+        cd %GITHUB_WORKSPACE%/yuzu && cmake --build build --config Release --target yuzu
     - name: upload
       uses: actions/upload-artifact@v3
       with:
