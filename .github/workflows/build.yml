@@ -1,0 +1,81 @@
+name: yuzu-build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    env:
+      VULKAN_SDK: C:\VulkanSDK\
+    steps:
+    - name: checkout this repo
+      uses: actions/checkout@v3
+    - name: checkout yuzu-emu/yuzu to yuzu/
+      uses: actions/checkout@v3
+      with:
+        repository: 'yuzu-emu/yuzu'
+        ref: 'master'
+        path: 'yuzu'
+        fetch-depth: 0
+        submodules: 'recursive'
+    - name: setup
+      shell: bash
+      run: |
+        cd $GITHUB_WORKSPACE/yuzu || exit 1
+        echo $GITHUB_WORKSPACE/yuzu
+        pip3 install requests
+        git config user.name "gh-action"
+        git config user.email "gh-action@example.com"
+        python3 $GITHUB_WORKSPACE/apply-patches.py mainline-merge "Mainline"
+        python3 $GITHUB_WORKSPACE/apply-patches.py early-access-merge "Early Access"
+        git apply $GITHUB_WORKSPACE/totk.patch
+        git submodule update --init --recursive -f
+    - name: boostrap vcpkg
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%/yuzu/externals/vcpkg
+        git fetch --unshallow --filter=blob:none
+        ./bootstrap-vcpkg.bat
+    - name: Setup Vulkan
+      run: |
+          $ver = (Invoke-WebRequest -Uri "https://vulkan.lunarg.com/sdk/latest.json" | ConvertFrom-Json).windows
+          echo Version $ver
+          $ProgressPreference = 'SilentlyContinue'
+          Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/$ver/windows/VulkanSDK-$ver-Installer.exe" -OutFile VulkanSDK.exe
+          echo Downloaded
+          .\VulkanSDK.exe --root C:\VulkanSDK  --accept-licenses --default-answer --confirm-command install
+          echo "C:\VulkanSDK\Bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: configure
+      shell: cmd
+      env:
+        CXXFLAGS: "/Gw /GA /Gr /Ob2 /arch:AVX2 /favor:AMD64"
+      run: >
+        cd %GITHUB_WORKSPACE%/yuzu && cmake -B build -G "Visual Studio 17 2022" -A x64 
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/install
+        -DCMAKE_TOOLCHAIN_FILE=./externals/vcpkg/scripts/buildsystems/vcpkg.cmake
+        -DYUZU_ENABLE_LTO=ON
+        -DCMAKE_POLICY_DEFAULT_CMP0069=NEW
+        -DYUZU_USE_BUNDLED_QT=ON
+        -DYUZU_USE_BUNDLED_SDL2=ON
+        -DYUZU_USE_QT_WEB_ENGINE=OFF
+        -DENABLE_WEB_SERVICE=OFF
+        -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=OFF
+        -DYUZU_TESTS=OFF
+        -DENABLE_QT_TRANSLATION=OFF
+        -DDISPLAY_VERSION=3575
+        -DYUZU_CRASH_DUMPS=OFF
+        -DENABLE_OPENGL=ON
+        -DYUZU_CHECK_SUBMODULES=OFF
+        -DYUZU_ROOM=OFF
+    - name: build
+      shell: cmd
+      run: >
+        cd %GITHUB_WORKSPACE%/yuzu && cmake --build build --config Release --target install
+    - name: upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: yuzu-windows
+        path: install/
