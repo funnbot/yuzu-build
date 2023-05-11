@@ -2,6 +2,10 @@ name: yuzu-build
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        default: '3780'
 
 jobs:
   build-windows:
@@ -49,33 +53,33 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
     - name: configure
       shell: cmd
-      # env:
-      # broken... CXXFLAGS: "/Gw /GA /Gr /Ob2 /arch:AVX2 /favor:AMD64"
+      env:
+        CXXFLAGS: "/Gw /GA /Gr /GL /arch:AVX2"
+        LDFLAGS: "/LTCG"
       run: >
         cd %GITHUB_WORKSPACE%/yuzu && cmake -B build -G Ninja 
         -DCMAKE_BUILD_TYPE=Release
-        -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/install
         -DCMAKE_TOOLCHAIN_FILE=./externals/vcpkg/scripts/buildsystems/vcpkg.cmake
         -DYUZU_ENABLE_LTO=ON
         -DCMAKE_POLICY_DEFAULT_CMP0069=NEW
         -DYUZU_USE_BUNDLED_QT=ON
         -DYUZU_USE_BUNDLED_SDL2=ON
-        -DYUZU_USE_QT_WEB_ENGINE=OFF
-        -DENABLE_WEB_SERVICE=OFF
+        -DYUZU_USE_QT_WEB_ENGINE=ON
+        -DENABLE_WEB_SERVICE=ON
         -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=OFF
         -DYUZU_TESTS=OFF
+        -DBUILD_TESTING=OFF
         -DENABLE_QT_TRANSLATION=OFF
-        -DDISPLAY_VERSION=3575
-        -DYUZU_CRASH_DUMPS=OFF
+        -DDISPLAY_VERSION="${{ inputs.version }}"
+        -DYUZU_CRASH_DUMPS=ON
         -DENABLE_OPENGL=ON
-        -DYUZU_CHECK_SUBMODULES=OFF
-        -DYUZU_ROOM=OFF
+        -DYUZU_ROOM=ON
     - name: build
       shell: cmd
       run: >
-        cd %GITHUB_WORKSPACE%/yuzu && cmake --build build --config Release --target install
+        cd %GITHUB_WORKSPACE%/yuzu && cmake --build build
     - name: upload
       uses: actions/upload-artifact@v3
       with:
         name: yuzu-windows
-        path: install/
+        path: ${{ github.workspace }}/yuzu/build/bin
