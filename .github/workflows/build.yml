@@ -48,6 +48,11 @@ jobs:
           echo Downloaded
           .\VulkanSDK.exe --root C:\VulkanSDK  --accept-licenses --default-answer --confirm-command install
           echo "C:\VulkanSDK\Bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+    - name: install QT6
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 6.*
+        cache: true
     - uses: ilammy/msvc-dev-cmd@v1
     - name: configure
       shell: cmd
@@ -60,7 +65,6 @@ jobs:
         -DCMAKE_TOOLCHAIN_FILE=./externals/vcpkg/scripts/buildsystems/vcpkg.cmake
         -DYUZU_ENABLE_LTO=ON
         -DCMAKE_POLICY_DEFAULT_CMP0069=NEW
-        -DYUZU_USE_BUNDLED_QT=ON
         -DYUZU_USE_BUNDLED_SDL2=ON
         -DYUZU_USE_QT_WEB_ENGINE=OFF
         -DENABLE_WEB_SERVICE=OFF
@@ -73,6 +77,8 @@ jobs:
         -DENABLE_OPENGL=ON
         -DYUZU_ROOM=OFF
         -DENABLE_QT6=ON
+        -DQt6_LOCATION="%Qt6_DIR%"
+        -DYUZU_USE_BUNDLED_QT=OFF
     - name: build
       shell: cmd
       run: >
