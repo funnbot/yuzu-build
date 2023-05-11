@@ -62,8 +62,8 @@ jobs:
         -DCMAKE_POLICY_DEFAULT_CMP0069=NEW
         -DYUZU_USE_BUNDLED_QT=ON
         -DYUZU_USE_BUNDLED_SDL2=ON
-        -DYUZU_USE_QT_WEB_ENGINE=ON
-        -DENABLE_WEB_SERVICE=ON
+        -DYUZU_USE_QT_WEB_ENGINE=OFF
+        -DENABLE_WEB_SERVICE=OFF
         -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=OFF
         -DYUZU_TESTS=OFF
         -DBUILD_TESTING=OFF
@@ -71,7 +71,7 @@ jobs:
         -DDISPLAY_VERSION="${{ inputs.version }}"
         -DYUZU_CRASH_DUMPS=ON
         -DENABLE_OPENGL=ON
-        -DYUZU_ROOM=ON
+        -DYUZU_ROOM=OFF
         -DENABLE_QT6=ON
     - name: build
       shell: cmd
