@@ -52,7 +52,7 @@ jobs:
       env:
         # broken... CXXFLAGS: "/Gw /GA /Gr /Ob2 /arch:AVX2 /favor:AMD64"
       run: >
-        cd %GITHUB_WORKSPACE%/yuzu && cmake -B build -G "Visual Studio 17 2022" -A x64 
+        cd %GITHUB_WORKSPACE%/yuzu && cmake -B build -G Ninja 
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/install
         -DCMAKE_TOOLCHAIN_FILE=./externals/vcpkg/scripts/buildsystems/vcpkg.cmake
