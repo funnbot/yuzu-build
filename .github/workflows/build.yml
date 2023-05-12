@@ -77,6 +77,9 @@ jobs:
       shell: cmd
       run: >
         cd %GITHUB_WORKSPACE%/yuzu && cmake --build build --config Release --target yuzu
+    - name: move dlls from bin/Release to bin
+      shell: bash
+      run: mv -v $GITHUB_WORKSPACE/yuzu/build/bin/Release/* $GITHUB_WORKSPACE/yuzu/build/bin/ && rm -r $GITHUB_WORKSPACE/yuzu/build/bin/Release
     - name: upload
       uses: actions/upload-artifact@v3
       with:
