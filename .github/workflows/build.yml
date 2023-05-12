@@ -22,7 +22,7 @@ jobs:
         ref: 'master'
         path: 'yuzu'
         fetch-depth: 0
-        submodules: 'recursive'
+        submodules: false
     - name: setup
       shell: bash
       run: |
@@ -31,9 +31,11 @@ jobs:
         pip3 install requests
         git config user.name "gh-action"
         git config user.email "gh-action@example.com"
+        
+        git submodule update --init --recursive -f --filter=blob:none
         python3 $GITHUB_WORKSPACE/apply-patches.py mainline-merge "Mainline"
         python3 $GITHUB_WORKSPACE/apply-patches.py early-access-merge "Early Access"
-        git submodule update --init --recursive -f
+        git submodule update --init --recursive -f --filter=blob:none
     - name: boostrap vcpkg
       shell: cmd
       run: |
