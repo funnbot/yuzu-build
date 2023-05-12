@@ -79,6 +79,7 @@ jobs:
         -DENABLE_QT6=ON
         -DQt6_LOCATION="%Qt6_DIR%"
         -DYUZU_USE_BUNDLED_QT=OFF
+        -DYUZU_USE_EXTERNAL_VULKAN_HEADERS=OFF
     - name: build
       shell: cmd
       run: >
