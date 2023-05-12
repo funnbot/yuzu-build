@@ -31,9 +31,9 @@ def do_page(page):
                 if (pr["state"] != "open"): continue
                 pn = pr["number"]
                 print(f"Matched {tagline} PR# {pn}")
-                print(subprocess.check_output(["git", "fetch", "origin", f"pull/{pn}/head:pr-{pn}", "-f"]))
+                print(subprocess.check_output(["git", "fetch", "origin", f"pull/{pn}/head:pr-{pn}", "-f", "--recurse-submodules=no"]))
                 print(subprocess.check_output(["git", "merge", "--squash", f"pr-{pn}"]))
-                print(subprocess.check_output(["git", "commit", "--no-verify", "-m", f"Merge {tagline} PR-{pn}"]))
+                print(subprocess.check_output(["git", "commit", "-m", f"Merge {tagline} PR-{pn}"]))
 
 try:
     for i in range(1,10):
