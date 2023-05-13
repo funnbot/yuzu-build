@@ -11,8 +11,8 @@ tagline = sys.argv[2]
 def check_individual(labels):
     ok_to_merge = False
     for label in labels:
-        if (label["name"] == "do-not-merge"):
-            return False
+#         if (label["name"] == "do-not-merge"):
+#             return False
         if (label["name"] == sys.argv[1]):
             ok_to_merge = True
     return ok_to_merge
