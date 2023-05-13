@@ -2,10 +2,6 @@ name: yuzu-build
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        type: string
-        default: '3780'
 
 jobs:
   build-windows:
@@ -53,6 +49,7 @@ jobs:
       shell: cmd
       env:
         CXXFLAGS: "/Gw /GA /Gr /GL /arch:AVX2"
+        CFLAGS: "/Gw /GA /Gr /GL /arch:AVX2"
         LDFLAGS: "/LTCG"
       run: >
         cd %GITHUB_WORKSPACE%/yuzu && cmake -B build -G Ninja
@@ -68,7 +65,6 @@ jobs:
         -DYUZU_TESTS=OFF
         -DBUILD_TESTING=OFF
         -DENABLE_QT_TRANSLATION=OFF
-        -DDISPLAY_VERSION="${{ inputs.version }}"
         -DYUZU_CRASH_DUMPS=ON
         -DENABLE_OPENGL=ON
         -DYUZU_ROOM=OFF
