@@ -69,11 +69,6 @@ jobs:
         -DENABLE_OPENGL=ON
         -DYUZU_ROOM=OFF
         -DYUZU_USE_EXTERNAL_VULKAN_HEADERS=OFF
-        -DBUILD_SHARED_LIBS=OFF
-        -DCMAKE_POLICY_DEFAULT_CMP0091=NEW
-        -DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreadedDLL"
-        -DVCPKG_TARGET_TRIPLET=x64-windows-static-md
-        -DVCPKG_HOST_TRIPLET=x64-windows-static-md
     - name: build
       shell: cmd
       run: >
