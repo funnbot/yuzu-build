@@ -28,10 +28,16 @@ def do_page(page):
                 # sanity check
                 if (pr["state"] != "open"): continue
                 pn = pr["number"]
-                print(f"Matched {tagline} PR# {pn}")
-                print(subprocess.check_output(["git", "fetch", "origin", f"pull/{pn}/head:pr-{pn}", "-f", "--recurse-submodules=no"]))
-                print(subprocess.check_output(["git", "merge", "--squash", f"pr-{pn}"]))
-                print(subprocess.check_output(["git", "commit", "-m", f"Merge PR-{pn} '{pr['title']}'"]))
+                title = pr["title"]
+                try:
+                    print(f"Matched {tagline} PR# {pn}")
+                    print(subprocess.check_output(["git", "fetch", "origin", f"pull/{pn}/head:pr-{pn}", "-f", "--recurse-submodules=no"]))
+                    print(subprocess.check_output(["git", "merge", "--squash", f"pr-{pn}"]))
+                    print(subprocess.check_output(["git", "commit", "-m", f"Merge PR-{pn} '{title}'"]))
+                    print(f"::notice::Merged PR-{pn} '{title}'")
+                except:
+                    print(f"::error::Error merging PR-{pn} '{title}'")
+                    raise
 
 try:
     for i in range(1,10):
