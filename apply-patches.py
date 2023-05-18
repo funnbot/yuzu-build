@@ -31,7 +31,7 @@ def do_page(page):
                 print(f"Matched {tagline} PR# {pn}")
                 print(subprocess.check_output(["git", "fetch", "origin", f"pull/{pn}/head:pr-{pn}", "-f", "--recurse-submodules=no"]))
                 print(subprocess.check_output(["git", "merge", "--squash", f"pr-{pn}"]))
-                print(subprocess.check_output(["git", "commit", "-m", f"Merge PR-{pn} '{pr["title"]}'"]))
+                print(subprocess.check_output(["git", "commit", "-m", f"Merge PR-{pn} '{pr['title']}'"]))
 
 try:
     for i in range(1,10):
