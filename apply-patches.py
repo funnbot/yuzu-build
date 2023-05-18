@@ -6,16 +6,14 @@
 
 import json, requests, subprocess, sys, traceback
 
-tagline = sys.argv[2]
+allow_labels = sys.argv[1].split(',') # comma separated list of labels to allow that pr
+extra_nums = sys.argv[2].split(',') # comma separated list of pr numbers to also add, even if it doesn't have the right labels 
 
-def check_individual(labels):
-    ok_to_merge = False
+def check_individual(labels, number):
     for label in labels:
-#         if (label["name"] == "do-not-merge"):
-#             return False
-        if (label["name"] == sys.argv[1]):
-            ok_to_merge = True
-    return ok_to_merge
+        if label in allow_labels: return True
+    if str(number) in extra_nums: return True
+    return False
 
 def do_page(page):
     url = f"https://api.github.com/repos/yuzu-emu/yuzu/pulls?page={page}"
@@ -26,14 +24,14 @@ def do_page(page):
         if j == []:
             return
         for pr in j:
-            if (check_individual(pr["labels"])):
+            if (check_individual(pr["labels"], pr["number"])):
                 # sanity check
                 if (pr["state"] != "open"): continue
                 pn = pr["number"]
                 print(f"Matched {tagline} PR# {pn}")
                 print(subprocess.check_output(["git", "fetch", "origin", f"pull/{pn}/head:pr-{pn}", "-f", "--recurse-submodules=no"]))
                 print(subprocess.check_output(["git", "merge", "--squash", f"pr-{pn}"]))
-                print(subprocess.check_output(["git", "commit", "-m", f"Merge {tagline} PR-{pn}"]))
+                print(subprocess.check_output(["git", "commit", "-m", f"Merge PR-{pn} '{pr["title"]}'"]))
 
 try:
     for i in range(1,10):
