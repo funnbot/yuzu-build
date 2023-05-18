@@ -30,7 +30,6 @@ def do_page(page):
                 pn = pr["number"]
                 title = pr["title"]
                 try:
-                    print(f"Matched {tagline} PR# {pn}")
                     print(subprocess.check_output(["git", "fetch", "origin", f"pull/{pn}/head:pr-{pn}", "-f", "--recurse-submodules=no"]))
                     print(subprocess.check_output(["git", "merge", "--squash", f"pr-{pn}"]))
                     print(subprocess.check_output(["git", "commit", "-m", f"Merge PR-{pn} '{title}'"]))
