@@ -29,7 +29,7 @@ jobs:
         pip3 install requests
         git config user.name "gh-action"
         git config user.email "gh-action@example.com"
-        python3 $GITHUB_WORKSPACE/apply-patches.py "mainline-merge,early-access-merge" "10280,10302,10376"
+        python3 $GITHUB_WORKSPACE/apply-patches.py "mainline-merge,early-access-merge" "10280,10302,10376" "${{ secrets.GITHUB_TOKEN }}"
         git submodule update --init --recursive -f
     - name: boostrap vcpkg
       shell: cmd
