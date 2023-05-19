@@ -11,7 +11,7 @@ extra_nums = sys.argv[2].split(',') # comma separated list of pr numbers to also
 
 def check_individual(labels, number):
     for label in labels:
-        if label in allow_labels: return True
+        if label["name"] in allow_labels: return True
     if str(number) in extra_nums: return True
     return False
 
