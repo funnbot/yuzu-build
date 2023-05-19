@@ -8,6 +8,8 @@ import json, requests, subprocess, sys, traceback
 
 allow_labels = sys.argv[1].split(',') # comma separated list of labels to allow that pr
 extra_nums = sys.argv[2].split(',') # comma separated list of pr numbers to also add, even if it doesn't have the right labels 
+github_token = None
+if len(sys.argv) >= 4: github_token = sys.argv[3]
 
 def check_individual(labels, number):
     for label in labels:
@@ -17,7 +19,10 @@ def check_individual(labels, number):
 
 def do_page(page):
     url = f"https://api.github.com/repos/yuzu-emu/yuzu/pulls?page={page}"
-    response = requests.get(url)
+    headers = {}
+    if github_token is not None: 
+        headers["Authorization"] = f"Bearer {github_token}"
+    response = requests.get(url, headers=headers)
     response.raise_for_status()
     if (response.ok):
         j = json.loads(response.content)
