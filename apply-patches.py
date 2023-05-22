@@ -7,11 +7,13 @@
 import json, requests, subprocess, sys, traceback
 
 allow_labels = sys.argv[1].split(',') # comma separated list of labels to allow that pr
-extra_nums = sys.argv[2].split(',') # comma separated list of pr numbers to also add, even if it doesn't have the right labels 
+extra_nums = sys.argv[2].split(',') # comma separated list of pr numbers to also add, even if it doesn't have the right labels
+ignore_nums = sys.argv[3].split(',')
 github_token = None
-if len(sys.argv) >= 4: github_token = sys.argv[3]
+if len(sys.argv) >= 5: github_token = sys.argv[4]
 
 def check_individual(labels, number):
+    if str(number) in ignore_nums: return False
     for label in labels:
         if label["name"] in allow_labels: return True
     if str(number) in extra_nums: return True
