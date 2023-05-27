@@ -23,11 +23,11 @@ jobs:
       shell: bash
       run: |
         cd $GITHUB_WORKSPACE/yuzu || exit 1
-        echo $GITHUB_WORKSPACE/yuzu
         pip3 install requests
         git config user.name "gh-action"
         git config user.email "gh-action@example.com"
-        python3 $GITHUB_WORKSPACE/apply-patches.py "mainline-merge,early-access-merge" "10280" "10221" "${{ secrets.GITHUB_TOKEN }}"
+        python3 $GITHUB_WORKSPACE/apply-patches.py "mainline-merge" "" "" "${{ secrets.GITHUB_TOKEN }}"
+        python3 $GITHUB_WORKSPACE/apply-patches.py "early-access-merge" "" "" "${{ secrets.GITHUB_TOKEN }}"
         git submodule update --init --recursive -f
     - name: boostrap vcpkg
       shell: cmd
@@ -58,22 +58,24 @@ jobs:
         -DCMAKE_POLICY_DEFAULT_CMP0069=NEW
         -DYUZU_USE_BUNDLED_SDL2=ON
         -DYUZU_USE_BUNDLED_QT=ON
-        -DYUZU_USE_QT_WEB_ENGINE=OFF
-        -DENABLE_WEB_SERVICE=OFF
+        -DYUZU_USE_QT_WEB_ENGINE=ON
+        -DENABLE_WEB_SERVICE=ON
         -DENABLE_COMPATIBILITY_LIST_DOWNLOAD=ON
         -DYUZU_TESTS=OFF
         -DBUILD_TESTING=OFF
         -DENABLE_QT_TRANSLATION=OFF
         -DYUZU_CRASH_DUMPS=ON
         -DENABLE_OPENGL=ON
-        -DYUZU_ROOM=OFF
+        -DYUZU_ROOM=ON
         -DYUZU_USE_EXTERNAL_VULKAN_HEADERS=OFF
     - name: build
       shell: cmd
       run: >
-        cd %GITHUB_WORKSPACE%/yuzu && cmake --build build --config Release --target yuzu
+        cd %GITHUB_WORKSPACE%/yuzu && cmake --build build --config Release
     - name: upload
       uses: actions/upload-artifact@v3
       with:
         name: yuzu-windows
-        path: ${{ github.workspace }}/yuzu/build/bin
+        path: |
+          ${{ github.workspace }}/yuzu/build/bin
+          !${{ github.workspace }}/yuzu/**/*.pdb
