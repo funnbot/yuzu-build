@@ -22,17 +22,18 @@ jobs:
     - name: setup
       shell: bash
       run: |
-        cd $GITHUB_WORKSPACE/yuzu || exit 1
+        cd yuzu || exit 1
         pip3 install requests
         git config user.name "gh-action"
         git config user.email "gh-action@example.com"
-        python3 $GITHUB_WORKSPACE/apply-patches.py "mainline-merge" "" "" "${{ secrets.GITHUB_TOKEN }}"
-        python3 $GITHUB_WORKSPACE/apply-patches.py "early-access-merge" "" "" "${{ secrets.GITHUB_TOKEN }}"
+        python3 ../apply-pr-patches.py "mainline-merge" "" "" "${{ secrets.GITHUB_TOKEN }}"
+        python3 ../apply-pr-patches.py "early-access-merge" "" "" "${{ secrets.GITHUB_TOKEN }}"
+        git apply ../ao.patch
         git submodule update --init --recursive -f
     - name: boostrap vcpkg
       shell: cmd
       run: |
-        cd %GITHUB_WORKSPACE%/yuzu/externals/vcpkg
+        cd yuzu/externals/vcpkg
         ./bootstrap-vcpkg.bat
     - name: Setup Vulkan
       run: |
@@ -51,7 +52,7 @@ jobs:
         CFLAGS: "/Gw /GA /Gr /GL /arch:AVX2"
         LDFLAGS: "/LTCG"
       run: >
-        cd %GITHUB_WORKSPACE%/yuzu && cmake -B build -G Ninja
+        cd yuzu && cmake -B build -G Ninja
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_TOOLCHAIN_FILE=./externals/vcpkg/scripts/buildsystems/vcpkg.cmake
         -DYUZU_ENABLE_LTO=ON
@@ -71,7 +72,7 @@ jobs:
     - name: build
       shell: cmd
       run: >
-        cd %GITHUB_WORKSPACE%/yuzu && cmake --build build --config Release
+        cd yuzu && cmake --build build --config Release
     - name: upload
       uses: actions/upload-artifact@v3
       with:
