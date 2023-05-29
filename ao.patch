@@ -15,17 +15,3 @@ index e8ddde6..4353eae 100644
 +        }
      }
  }
-
-@@ -156,6 +163,13 @@ ImageInfo::ImageInfo(const Maxwell3D::Regs::RenderTargetConfig& ct,
-         downscaleable = size.height > 512;
-         type = ImageType::e2D;
-         resources.layers = ct.depth;
-+
-+        // Disable rescaling if this is a TotK 1080p AO texture (height = 1080 / 4)
-+        // Try narrowing to just the AO texture by checking some characteristics of it:
-+        if (size.width == 480 && size.height == 270 && size.depth == 1 &&
-+            ct.format == Tegra::RenderTargetFormat::R32_FLOAT && ct.volume.Value() == 0) {
-+            rescaleable = false;
-+        }
-     }
- }
