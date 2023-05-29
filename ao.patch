@@ -15,6 +15,7 @@ index e8ddde6..4353eae 100644
 +        }
      }
  }
+ 
 @@ -156,6 +163,13 @@ ImageInfo::ImageInfo(const Maxwell3D::Regs::RenderTargetConfig& ct,
          downscaleable = size.height > 512;
          type = ImageType::e2D;
