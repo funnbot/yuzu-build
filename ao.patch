@@ -1,4 +1,5 @@
-index e8ddde6..4353eae 100644
+diff --git a/src/video_core/texture_cache/image_info.cpp b/src/video_core/texture_cache/image_info.cpp
+index e8ddde691..4353eaef4 100644
 --- a/src/video_core/texture_cache/image_info.cpp
 +++ b/src/video_core/texture_cache/image_info.cpp
 @@ -115,6 +115,13 @@ ImageInfo::ImageInfo(const TICEntry& config) noexcept {
@@ -14,7 +15,7 @@ index e8ddde6..4353eae 100644
 +        }
      }
  }
-
+ 
 @@ -156,6 +163,13 @@ ImageInfo::ImageInfo(const Maxwell3D::Regs::RenderTargetConfig& ct,
          downscaleable = size.height > 512;
          type = ImageType::e2D;
