@@ -28,7 +28,6 @@ jobs:
         git config user.email "gh-action@example.com"
         python3 ../apply-pr-patches.py "mainline-merge" "" "" "${{ secrets.GITHUB_TOKEN }}"
         python3 ../apply-pr-patches.py "early-access-merge" "" "" "${{ secrets.GITHUB_TOKEN }}"
-        git apply ../ao.patch
         git submodule update --init --recursive -f
     - name: boostrap vcpkg
       shell: cmd
